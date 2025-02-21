@@ -2,15 +2,15 @@ namespace App.Class;
 
 public class Rectangle
 {
-    private double _carre;
+    private double _rectangle;
 
     public Rectangle(double carre)
     {
-        _carre = carre;
+        _rectangle = carre;
     }
 
     public double getCarre()
     {
-        return _carre;
+        return _rectangle;
     }
 }
