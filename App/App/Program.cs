@@ -6,26 +6,25 @@ class Program
 {
     static void Main(string[] args)
     {
+        ShapeManager groupe1 = new ShapeManager();
+        groupe1.AddForm(new Triangle(24,5,3,"RED"));
+        groupe1.AddForm(new Rond(25,6,"BLUE"));
+        groupe1.AddForm(new Rectangle(25,3,"WHITE"));
+        groupe1.DisplayAll();
         
-        Triangle Triangle1 = new Triangle(3.5,"RED");
-        Rectangle Rectangle1 = new Rectangle(4.5,"White");
-        Rond Rond1 = new Rond(2.5,"Black");
-        
-
+        /*Triangle Triangle1 = new Triangle(4,7,12,"RED");
+        Rectangle rectangle = new Rectangle(4.5,7.9,"White");
+        Rond Rond1 = new Rond(2.5,4.2,"Black");
         
         Triangle1.DisplayInfo();
         Console.WriteLine("_______________________________________\n");
         Rond1.DisplayInfo();
         Console.WriteLine("_______________________________________\n");
-        Rectangle1.DisplayInfo();
-        
-        Console.WriteLine("_______________________________________\n");
+        rectangle.DisplayInfo();
         Console.WriteLine("_______________________________________\n");
 
-        //Change Color and Edite Methodes
-        Rond1.SetColor("Blue");
-        Rond1.Edite(5.5);
-        Rond1.DisplayInfo();
+        Triangle1.setAdjacent(3);
+        Triangle1.DisplayInfo();*/
 
     }
     

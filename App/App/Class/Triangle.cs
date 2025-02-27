@@ -2,32 +2,47 @@ namespace App.Class;
 
 public class Triangle : Form
 {
-   public Triangle(double diameter, string color) : base(diameter, color)
+    private double _adjacent;
+    private double _oppose;
+    private double _hypotenuse;
+   public Triangle(double adjacent,double oppose,double hypotenuse , string color) : base("Triangle" ,color)
     {
-        
+        _adjacent = adjacent;
+        _oppose = oppose;
+        _hypotenuse = hypotenuse;
+    }
+
+    public void setAdjacent(double adjacent)
+    {
+        _adjacent = adjacent;
+    }
+
+    public void setOppose(double oppose)
+    {
+        _oppose = oppose;
+    }
+
+    public void setHypotenuse(double hypotenuse)
+    {
+        _hypotenuse = hypotenuse;
+    }
+
+    public override double CalculateArea()
+    {
+        return 0.5 * _adjacent * _oppose;
+
+    }
+    public override double CalculatePerimeter()
+    {
+        return _adjacent + _oppose + _hypotenuse;
     }
 
     public override void DisplayInfo()
     {
-        Console.WriteLine("Triangle Information : Color "+_Color+" | Diametre : "+_Diametre);
-    }
+        Console.WriteLine($"{_name} Information :\nColor "+_color+" \n"+ "Surface : "+CalculateArea()+"\nPérimètres : "+CalculatePerimeter());
+        Console.WriteLine("Côté adjacent : " +_adjacent+"\nCôté opposé : "+_oppose+"\nHypoténuse :"+_hypotenuse);
+    } 
+
+    
 }
 
-/*public class Triangle
-{
-    private double _Diametre;
-
-    public Triangle(double diametre)
-    {
-        _Diametre = diametre;
-    }
-
-    public void Edite(double diametre)
-    {
-        _Diametre = diametre;
-    }
-    public double getDiametre()
-    {
-        return _Diametre;
-    }
-}*/

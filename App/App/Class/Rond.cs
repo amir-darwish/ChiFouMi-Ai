@@ -3,33 +3,38 @@ using App.Class;
 
 public class Rond : Form
 {
-    public Rond(double Diameter, string Color) : base(Diameter, Color)
+    private double _rayon;
+    private double _centre;
+    public Rond(double centre, double rayon, string color) : base("Rond" ,color)
     {
-        
+        _centre = centre;
+        _rayon = rayon;
     }
 
+    public void setRayon(double rayon)
+    {
+        _rayon = rayon;
+    }
+
+    public void setCentre(double centre)
+    {
+        _centre = centre;
+    }
+    public override double CalculateArea()
+    {
+        return Math.PI * _rayon * _rayon;
+    }
+    public override double CalculatePerimeter()
+    { 
+        return 2 * Math.PI * _rayon;
+    }
+
+    
     public override void DisplayInfo()
     {
-        Console.WriteLine("Rond Information : Color "+_Color+" | Diametre : "+_Diametre);
-
+        Console.WriteLine($"{_name} Information :\nColor "+_color+" \n"+ "Surface : "+CalculateArea()+"\nPérimètres : "+CalculatePerimeter());
+        Console.WriteLine("Le Centre : " +_centre+"\n"+ "Le Rayon : "+_rayon);
     }
+
 }
 
-/*class Rond
-{
-    private double _Diametre;
-
-    public Rond(double diametre)
-    {
-        _Diametre = diametre;
-    }
-    
-    public void Edite(double diametre)
-    {
-        _Diametre = diametre;
-    }
-    public double getDiametre()
-    {
-        return _Diametre;
-    }
-}*/

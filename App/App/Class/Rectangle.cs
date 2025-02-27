@@ -1,33 +1,43 @@
+using System.Reflection.Emit;
+
 namespace App.Class;
 
 public class Rectangle : Form
 {
-    public Rectangle(double Diameter,string Color):base(Diameter,Color)
+    private double _longueur;
+    private double _largeur;
+
+    public Rectangle(double longueur,double largeur , string color) : base("Rectangle" ,color)
     {
-        
+        _longueur = longueur;
+        _largeur = largeur;
+    }
+
+    public void SetLongueur(double longueur)
+    {
+        _longueur = longueur;
+    }
+
+    public void setLargeur(double largeur)
+    {
+        _largeur = largeur;
+    }
+
+
+    public override double CalculateArea()
+    {
+        return _longueur * _largeur;
+    }
+    public override double CalculatePerimeter()
+    {
+        return 2 * (_longueur + _largeur);
     }
 
     public override void DisplayInfo()
     {
-        Console.WriteLine("Rectangle Information : Color "+_Color+" | Diametre : "+_Diametre);
-
+        Console.WriteLine($"{_name} Information :\nColor "+_color+" \n"+ "Surface : "+CalculateArea()+"\nPérimètres : "+CalculatePerimeter());
+        
+        Console.WriteLine("Longueur : " +_longueur+"\nLargeur : "+_largeur);
     }
+    
 }
-/*public class Rectangle
-{
-    private double _rectangle;
-
-    public Rectangle(double Rectangle)
-    {
-        _rectangle = Rectangle;
-    }
-
-    public void Edite(double Rectangle)
-    {
-        _rectangle = Rectangle;
-    }
-    public double getDiameter()
-    {
-        return _rectangle;
-    }
-}*/
