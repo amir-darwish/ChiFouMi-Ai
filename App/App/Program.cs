@@ -7,17 +7,16 @@ class Program
     static void Main(string[] args)
     {
         ShapeManager groupe1 = new ShapeManager();
-        groupe1.AddForm(new Triangle(24,5,3,"RED"));
-        groupe1.AddForm(new Rond(25,6,"BLUE"));
-        groupe1.AddForm(new Rectangle(25,3,"WHITE"));
+        groupe1.AddForm(new Triangle(5,4,3,"RED"));
+        groupe1.AddForm(new Rond(6,"BLUE"));
+        groupe1.AddForm(new Rectangle(1,1,"WHITE"));
         groupe1.DisplayAll();
         
+        /*
         Console.WriteLine("_______________________________________\n");
         Console.WriteLine("_______________________________________\n");
         Console.WriteLine("_______________________________________\n");
-        Console.WriteLine("_______________________________________\n");
-        Console.WriteLine("_______________________________________\n");
-        Console.WriteLine("_______________________________________\n");
+
 
         Triangle Triangle1 = new Triangle(4,7,12,"RED");
         Rectangle rectangle = new Rectangle(4.5,7.9,"White");
@@ -32,6 +31,7 @@ class Program
 
         Triangle1.setAdjacent(3);
         Triangle1.DisplayInfo();
+        */
 
     }
     

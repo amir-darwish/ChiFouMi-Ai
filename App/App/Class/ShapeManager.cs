@@ -15,23 +15,40 @@ public class ShapeManager
         _Forms.Add(form);
     }
 
-    public void DisplayAll()
+    public double CalculateTotalArea()
     {
         double totalArea = 0;
+        foreach (var form in _Forms)
+        {
+            totalArea += form.CalculateArea();
+        }
+        return totalArea;
+    }
+
+    public double CalculateTotalPerimeter()
+    {
         double totalPerimeter = 0;
+        foreach (var form in _Forms)
+        {
+            totalPerimeter += form.CalculatePerimeter();
+        }
+        return totalPerimeter;
+    }
+    public void DisplayAll()
+    {
+
         if (_Forms.Count() != 0)
         {
             Console.WriteLine("\n--- Informations des Formes ---");
             foreach (var form in _Forms)
             {
                 form.DisplayInfo();
-                totalArea += form.CalculateArea();
-                totalPerimeter += form.CalculatePerimeter();
+
                 Console.WriteLine("----------------------------------");
             }
 
-            Console.WriteLine($"Total des Aires: {totalArea}");
-            Console.WriteLine($"Total des Périmètres: {totalPerimeter}");
+            Console.WriteLine($"Total des Aires: {CalculateTotalArea()}");
+            Console.WriteLine($"Total des Périmètres: {CalculateTotalArea()}");
         }
         else
         { 

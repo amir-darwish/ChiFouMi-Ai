@@ -10,8 +10,19 @@ public class Triangle : Form
         _adjacent = adjacent;
         _oppose = oppose;
         _hypotenuse = hypotenuse;
+        
+        if (!IsValidTriangle(adjacent, oppose, hypotenuse))
+        {
+            throw new ArgumentException("Invalid Triangle");
+        }
+        
     }
 
+    private bool IsValidTriangle(double a, double b, double c)
+    {
+        return (a + b > c) && (a + c > b) && (b + c > a);
+
+    }
     public void setAdjacent(double adjacent)
     {
         _adjacent = adjacent;
