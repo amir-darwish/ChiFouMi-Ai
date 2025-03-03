@@ -1,4 +1,5 @@
 
+using System.ComponentModel;
 using App.Class;
 
 public class Rond : Form
@@ -19,6 +20,16 @@ public class Rond : Form
     public void setCentre(double centre)
     {
         _centre = centre;
+    }
+
+    public double getRayon()
+    {
+        return _rayon;
+    }
+
+    public double getCentre()
+    {
+        return _centre;
     }
     public override double CalculateArea()
     {

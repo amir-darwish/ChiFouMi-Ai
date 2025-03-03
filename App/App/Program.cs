@@ -12,7 +12,14 @@ class Program
         groupe1.AddForm(new Rectangle(25,3,"WHITE"));
         groupe1.DisplayAll();
         
-        /*Triangle Triangle1 = new Triangle(4,7,12,"RED");
+        Console.WriteLine("_______________________________________\n");
+        Console.WriteLine("_______________________________________\n");
+        Console.WriteLine("_______________________________________\n");
+        Console.WriteLine("_______________________________________\n");
+        Console.WriteLine("_______________________________________\n");
+        Console.WriteLine("_______________________________________\n");
+
+        Triangle Triangle1 = new Triangle(4,7,12,"RED");
         Rectangle rectangle = new Rectangle(4.5,7.9,"White");
         Rond Rond1 = new Rond(2.5,4.2,"Black");
         
@@ -24,7 +31,7 @@ class Program
         Console.WriteLine("_______________________________________\n");
 
         Triangle1.setAdjacent(3);
-        Triangle1.DisplayInfo();*/
+        Triangle1.DisplayInfo();
 
     }
     

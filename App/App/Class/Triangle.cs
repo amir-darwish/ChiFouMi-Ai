@@ -27,6 +27,20 @@ public class Triangle : Form
         _hypotenuse = hypotenuse;
     }
 
+    public double getAdjacent()
+    {
+        return _adjacent;
+    }
+
+    public double getOppose()
+    {
+        return _oppose;
+    }
+
+    public double getHypotenuse()
+    {
+        return _hypotenuse;
+    }
     public override double CalculateArea()
     {
         return 0.5 * _adjacent * _oppose;

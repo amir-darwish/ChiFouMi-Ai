@@ -23,6 +23,15 @@ public class Rectangle : Form
         _largeur = largeur;
     }
 
+    public double getLongueur()
+    {
+        return _longueur;
+    }
+
+    public double getLargeur()
+    {
+        return _largeur;
+    }
 
     public override double CalculateArea()
     {
