@@ -1,7 +1,7 @@
 
 using System.ComponentModel;
 using App.Class;
-
+namespace App.Class;
 public class Rond : Form
 {
     private double _rayon;
@@ -15,7 +15,10 @@ public class Rond : Form
         _rayon = rayon;
     }
 
-
+    public string getColor()
+    {
+        return _color;
+    }
 
     public double getRayon()
     {
@@ -38,6 +41,7 @@ public class Rond : Form
         Console.WriteLine($"{_name} Information :\nColor "+_color+" \n"+ "Surface : "+CalculateArea()+"\nPérimètres : "+CalculatePerimeter());
         Console.WriteLine("Le Rayon : "+_rayon);
     }
+
 
 }
 

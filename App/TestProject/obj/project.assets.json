@@ -964,11 +964,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/amir/Desktop/ChiFouMi/App/TestProject/TestProject.csproj",
+      "projectUniqueName": "/home/amir/Desktop/ChiFouMi_Copy/App/TestProject/TestProject.csproj",
       "projectName": "TestProject",
-      "projectPath": "/home/amir/Desktop/ChiFouMi/App/TestProject/TestProject.csproj",
+      "projectPath": "/home/amir/Desktop/ChiFouMi_Copy/App/TestProject/TestProject.csproj",
       "packagesPath": "/home/amir/.nuget/packages/",
-      "outputPath": "/home/amir/Desktop/ChiFouMi/App/TestProject/obj/",
+      "outputPath": "/home/amir/Desktop/ChiFouMi_Copy/App/TestProject/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/home/amir/.nuget/NuGet/NuGet.Config"
@@ -984,8 +984,8 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "projectReferences": {
-            "/home/amir/Desktop/ChiFouMi/App/App/App.csproj": {
-              "projectPath": "/home/amir/Desktop/ChiFouMi/App/App/App.csproj"
+            "/home/amir/Desktop/ChiFouMi_Copy/App/App/App.csproj": {
+              "projectPath": "/home/amir/Desktop/ChiFouMi_Copy/App/App/App.csproj"
             }
           }
         }

@@ -1,3 +1,4 @@
+using System.Drawing;
 using System.Reflection.Emit;
 
 namespace App.Class;
@@ -33,6 +34,10 @@ public class Rectangle : Form
         return _largeur;
     }
 
+    public string getColor()
+    {
+        return _color;
+    }
     public override double CalculateArea()
     {
         return _longueur * _largeur;
@@ -48,5 +53,6 @@ public class Rectangle : Form
         
         Console.WriteLine("Longueur : " +_longueur+"\nLargeur : "+_largeur);
     }
+
     
 }

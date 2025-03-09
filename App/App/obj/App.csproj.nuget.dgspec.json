@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "/home/amir/Desktop/ChiFouMi/App/App/App.csproj": {}
+    "/home/amir/Desktop/ChiFouMi_Copy/App/App/App.csproj": {}
   },
   "projects": {
-    "/home/amir/Desktop/ChiFouMi/App/App/App.csproj": {
+    "/home/amir/Desktop/ChiFouMi_Copy/App/App/App.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/amir/Desktop/ChiFouMi/App/App/App.csproj",
+        "projectUniqueName": "/home/amir/Desktop/ChiFouMi_Copy/App/App/App.csproj",
         "projectName": "App",
-        "projectPath": "/home/amir/Desktop/ChiFouMi/App/App/App.csproj",
+        "projectPath": "/home/amir/Desktop/ChiFouMi_Copy/App/App/App.csproj",
         "packagesPath": "/home/amir/.nuget/packages/",
-        "outputPath": "/home/amir/Desktop/ChiFouMi/App/App/obj/",
+        "outputPath": "/home/amir/Desktop/ChiFouMi_Copy/App/App/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "/home/amir/.nuget/NuGet/NuGet.Config"

@@ -57,16 +57,22 @@ public class Triangle : Form
         return 0.5 * _adjacent * _oppose;
 
     }
+
+    public string getColor()
+    {
+        return _color;
+    }
     public override double CalculatePerimeter()
     {
         return _adjacent + _oppose + _hypotenuse;
     }
-
+    
     public override void DisplayInfo()
     {
         Console.WriteLine($"{_name} Information :\nColor "+_color+" \n"+ "Surface : "+CalculateArea()+"\nPérimètres : "+CalculatePerimeter());
         Console.WriteLine("Côté adjacent : " +_adjacent+"\nCôté opposé : "+_oppose+"\nHypoténuse :"+_hypotenuse);
     } 
+
 
     
 }
