@@ -50,15 +50,15 @@ namespace API.Controllers
             return Ok(formsDto);
         }
 // get by index
-    [HttpGet("{id}")]
-        public IActionResult GetFormById(int id)
+    [HttpGet("{index}")]
+        public IActionResult GetFormById(int index)
         {
-            if (id < 0 || id >= _Forms.Count)
+            if (index < 0 || index >= _Forms.Count)
             {
-                return NotFound($"No form found with ID {id}");
+                return NotFound($"No form found with ID {index}");
             }
 
-            var form = _Forms[id];
+            var form = _Forms[index];
             switch (form)
             {
                 case Rond r:

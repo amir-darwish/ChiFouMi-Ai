@@ -1,9 +1,16 @@
+using Newtonsoft.Json;
+
 namespace API.ClassDTO;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
+[JsonObject]
 public class FormsDTO 
 {
-    public string Type { get; set; }  // "Rond", "Rectangle", "Triangle"
+    [JsonPropertyOrder(1)]
+    public string Type { get; set; }
+    
+    [JsonPropertyOrder(2)]
     public string Color { get; set; }
     
     // for post method 
@@ -25,7 +32,7 @@ public class FormsDTO
 
     [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
     public double? Hypotenuse { get; set; }
-    protected FormsDTO(string type, string color)
+    public FormsDTO(string type, string color)
     {
         Type = type;
         Color = color;

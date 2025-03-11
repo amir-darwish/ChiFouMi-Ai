@@ -1,6 +1,12 @@
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.TypeNameHandling = Newtonsoft.Json.TypeNameHandling.None; 
+        options.SerializerSettings.NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore;
+    });
 
 //  add Swagger
 builder.Services.AddEndpointsApiExplorer();

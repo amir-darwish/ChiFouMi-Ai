@@ -11,6 +11,7 @@ class Program
         groupe1.AddForm(new Triangle(5,4,3,"RED"));
         groupe1.AddForm(new Rond(6,"BLUE"));
         groupe1.AddForm(new Rectangle(1,1,"WHITE"));
+        Console.WriteLine(groupe1.CalculateTotalPerimeter());
         groupe1.DisplayAll();
         
         /*

@@ -107,3 +107,7 @@
 /home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/App
 /home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/App.dll
 /home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/App.pdb
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.AspNetCore.JsonPatch.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Newtonsoft.Json.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Newtonsoft.Json.Bson.dll

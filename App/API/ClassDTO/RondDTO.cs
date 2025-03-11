@@ -1,16 +1,23 @@
 using App.Class;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
+using Newtonsoft.Json;
 
 namespace API.ClassDTO;
+
+[JsonObject]
 
 public class RondDTO : FormsDTO
 {
     [JsonPropertyOrder(3)]
-    public double Rayon{ get; set; }
+    public new double Rayon { get; set; } 
 
-    public RondDTO(double rayon, string color):base("Rond", color)
+    public RondDTO(double rayon, string color) : base("Rond", color)
     {
         Rayon = rayon;
     }
-    public RondDTO(){}
+
+    public RondDTO() : base("Rond", null)
+    {
+    }
 }

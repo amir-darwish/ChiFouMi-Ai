@@ -18,6 +18,11 @@ public abstract class Form
         {
                 _color = color;
         }
+
+        public string getColor()
+        {
+                return _color;
+        }
         public abstract double CalculateArea();
         public abstract double CalculatePerimeter();
         public abstract void  DisplayInfo();

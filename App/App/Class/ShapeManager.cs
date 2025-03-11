@@ -3,10 +3,14 @@ namespace App.Class;
 
 public class ShapeManager
 {
-    private new List<Form> _Forms;
+    public int ID { get; private set; }  
+    private List<Form> _Forms;
+
+    private static int _nextId = 1;
 
     public ShapeManager()
     {
+        ID = _nextId++; 
         _Forms = new List<Form>();
     }
 
@@ -14,7 +18,10 @@ public class ShapeManager
     {
         _Forms.Add(form);
     }
-
+    public List<Form> GetForms()
+    {
+        return _Forms;
+    }
     public double CalculateTotalArea()
     {
         double totalArea = 0;
