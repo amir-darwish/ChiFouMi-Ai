@@ -111,3 +111,17 @@
 /home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.AspNetCore.Mvc.NewtonsoftJson.dll
 /home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Newtonsoft.Json.dll
 /home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Newtonsoft.Json.Bson.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.EntityFrameworkCore.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.EntityFrameworkCore.Abstractions.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.EntityFrameworkCore.Relational.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Npgsql.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Npgsql.EntityFrameworkCore.PostgreSQL.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.Caching.Abstractions.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.Caching.Memory.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.Configuration.Abstractions.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.DependencyInjection.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.Logging.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.Logging.Abstractions.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.Options.dll
+/home/amir/Desktop/ChiFouMi_Copy/App/API/bin/Debug/net9.0/Microsoft.Extensions.Primitives.dll
