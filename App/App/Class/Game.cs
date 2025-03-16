@@ -1,17 +1,27 @@
+using Microsoft.Extensions.Options;
+
 namespace App.Class;
+using App.Data;
+using Microsoft.EntityFrameworkCore;
 
 public class Game
 {
     private Player _player1;
     private Player _computer;
+    private AppDbContext _context;
     private ShapeManager _shapeManager;
 
-    public Game(Player player1)
+    public Game(Player player1 )
     {
         _player1 = player1;
         _computer = new Player("Computer");
         _shapeManager = new ShapeManager();
         
+        // Create Context For DB
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseNpgsql("Host=localhost;Database=chifoumi_db;Username=admin;Password=admin")
+            .Options;
+        _context = new AppDbContext(options);
     }
     private Form TransferAnEnumToShape(enShapeType enShape)
     {
@@ -71,7 +81,10 @@ public class Game
         string result = "";
         result = DetermineWinner();
         Console.WriteLine(result);
+        SaveGameResult(result);
     }
+    
+
 
     private string DetermineWinner()
     {
@@ -102,5 +115,41 @@ public class Game
         else
         {
             return "It's a tie!";
-        }    }
+        }    
+    }
+    public void SaveGameResult(string result)
+    {
+        var options = new DbContextOptionsBuilder<AppDbContext>()
+            .UseNpgsql("Host=localhost;Database=chifoumi_db;Username=admin;Password=admin")
+            .Options;
+        using (var context = new AppDbContext(options))
+        {
+            // Check if Player Alredy in Datebase
+            var existingPlayer = context.Players.FirstOrDefault(p => p.Name == _player1.Name);
+            if (existingPlayer == null)
+            {
+                context.Players.Add(_player1);
+                context.SaveChanges(); 
+            }
+            else
+            {
+                // If the player exists, use the existing player
+                _player1 = existingPlayer;
+            }
+
+            // Add game to GameHistories table in Database
+            var gameHistory = new GameHistory
+            {
+                PlayerId = _player1.Id, // ربط الـ PlayerId بشكل صحيح
+                PlayerShape = _player1.GetEnumShape(),
+                ComputerShape = _computer.GetEnumShape(),
+                Result = result,
+                PlayedAt = DateTime.UtcNow
+            };
+
+            context.GameHistories.Add(gameHistory);
+            context.SaveChanges(); // حفظ سجل اللعبة
+        }
+    }
+
 }
