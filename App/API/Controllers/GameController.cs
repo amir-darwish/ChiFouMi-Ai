@@ -16,59 +16,111 @@ namespace App.Controllers
         {
             _context = context;
         }
-
-        [HttpPost("play")]
-        public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
+        [HttpPost("start-session")]
+        public IActionResult StartSession([FromBody] GameSessionRequest request)
         {
-            if (playerShapeRequest == null || string.IsNullOrWhiteSpace(playerShapeRequest.PlayerName) ||
-                !Enum.IsDefined(typeof(enShapeType), playerShapeRequest.PlayerShape))
+            if (request == null || string.IsNullOrWhiteSpace(request.PlayerName) || request.TotalRounds <= 0)
             {
-                return BadRequest("Invalid input. Please provide a valid player name and shape.");
+                return BadRequest(new {error = "Invalid input. Please provide a valid player name and number of rounds."});
             }
 
-            // search and create Player if not exist in database
-            var player = _context.Players.FirstOrDefault(p => p.Name == playerShapeRequest.PlayerName);
+            //Search for player and add it if not exist
+            var player = _context.Players.FirstOrDefault(p => p.Name == request.PlayerName);
             if (player == null)
             {
-                player = new Player(playerShapeRequest.PlayerName);
+                player = new Player(request.PlayerName);
                 _context.Players.Add(player);
-                _context.SaveChanges(); 
+                _context.SaveChanges();
             }
 
-           // chose player shape by number
-            var playerId = player.Id;
-            player.ChooseShape(CreateShape(playerShapeRequest.PlayerShape));
-
-            // chose computer shape randomly 
-            var computerShape = (enShapeType)new Random().Next(1, 4);
-            var computer = new Player("Computer");
-            computer.ChooseShape(CreateShape(computerShape));
-
-            
-            var result = DetermineWinner(player, computer);
-
-           // save in database
-            var gameHistory = new GameHistory
+            // create a session
+            var gameSession = new GameSession()
             {
-                PlayerId = playerId,  
-                PlayerShape = playerShapeRequest.PlayerShape,
-                ComputerShape = computerShape,
-                Result = result,
-                PlayedAt = DateTime.UtcNow
+                PlayerId = player.Id,
+                TotalRounds = request.TotalRounds
             };
 
-            _context.GameHistories.Add(gameHistory);
+            _context.GameSession.Add(gameSession);
             _context.SaveChanges();
 
-          // return le resulte
             return Ok(new
             {
-                PlayerName = playerShapeRequest.PlayerName,
-                PlayerShape = playerShapeRequest.PlayerShape,
-                ComputerShape = computerShape,
-                Result = result
+                Status = "Success",
+                Message = "Game session started!", SessionId = gameSession.Id
             });
         }
+
+[HttpPost("play")]
+public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
+{
+    if (playerShapeRequest == null || !Enum.IsDefined(typeof(enShapeType), 
+            playerShapeRequest.PlayerShape) || playerShapeRequest.GameSessionId == 0)
+    {
+        return BadRequest(new
+        {
+            erorr ="Invalid input. Please provide a valid shape and session ID."
+        });
+    }
+
+    // Find the game session based on GameSessionId
+    var gameSession = _context.GameSession.FirstOrDefault(gs => gs.Id == playerShapeRequest.GameSessionId);
+    if (gameSession == null)
+    {
+        return BadRequest(new
+        {
+            error =  "Game session could not be found."
+        });
+    }
+
+    var player = _context.Players.FirstOrDefault(p => p.Id == gameSession.PlayerId);
+    if (player == null)
+    {
+        return BadRequest(new
+        {
+            error = "Are you sure you are a player ? I didn't find you in my datebase. "
+        });
+    }
+
+    // chose player shape by number
+    player.ChooseShape(CreateShape(playerShapeRequest.PlayerShape));
+
+    // chose computer shape randomly
+    var computerShape = (enShapeType)new Random().Next(1, 4);
+    var computer = new Player("Computer");
+    computer.ChooseShape(CreateShape(computerShape));
+
+    var result = DetermineWinner(player, computer);
+
+    // Check number of rounds
+    var gameHistoryCount = _context.GameHistories.Count(gh => gh.GameSessionId == playerShapeRequest.GameSessionId);
+    if (gameHistoryCount >= gameSession.TotalRounds)
+    {
+        return BadRequest("You have reached the maximum number of rounds for this session.");
+    }
+
+    // save in database
+    var gameHistory = new GameHistory
+    {
+        GameSessionId = playerShapeRequest.GameSessionId,
+        PlayerId = player.Id,
+        PlayerShape = playerShapeRequest.PlayerShape,
+        ComputerShape = computerShape,
+        Result = result,
+        PlayedAt = DateTime.UtcNow
+    };
+
+    _context.GameHistories.Add(gameHistory);
+    _context.SaveChanges();
+
+    return Ok(new
+    {
+        PlayerName = player.Name,
+        PlayerShape = playerShapeRequest.PlayerShape,
+        ComputerShape = computerShape,
+        Result = result
+    });
+}
+
 
 
         private Form CreateShape(enShapeType shapeType)
@@ -117,8 +169,14 @@ namespace App.Controllers
 
     public class PlayerShapeRequest
     {
-        public string PlayerName { get; set; }
         public enShapeType PlayerShape { get; set; }
+        public int GameSessionId { get; set; } 
+
+    }
+    public class GameSessionRequest
+    {
+        public string PlayerName { get; set; }
+        public int TotalRounds { get; set; } 
     }
     
     

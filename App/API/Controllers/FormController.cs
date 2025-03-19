@@ -86,28 +86,70 @@ namespace API.Controllers
                     {
                         var rond = new Rond(form.Rayon.Value, form.Color);
                         _Forms.Add(rond);
-                        return Ok("Done adding form.");
-                        
-                    } 
-                    return BadRequest("Rayon and Color are required for Rond.");
-                break;
-                case "triangle":
-                    if ((form.Adjacent.Value != 0 && form.Opposite.Value !=0 && form.Hypotenuse.Value !=0) && !string.IsNullOrEmpty(form.Color))
-                    {
-                        var triangle  = new Triangle(form.Adjacent.Value, form.Opposite.Value, form.Hypotenuse.Value, form.Color);
-                        _Forms.Add(triangle);
-                        return Ok("Done adding triangle.");
+                        return Ok(new 
+                        {
+                            status = "success",
+                            message = "Done adding form",
+                            data = new 
+                            {
+                                name = form.Type,
+                                rayon = form.Rayon.Value,
+                                color = form.Color
+                            }
+                        });
                     }
-                    return BadRequest("Adjacent and Opposite are required for triangle.");
+                    return BadRequest(new 
+                    {
+                        status = "error",
+                        message = "error adding form",
+                    });                
+                    break;
+                case "triangle":
+                    if ((form.Adjacent.Value != 0 && form.Opposite.Value != 0 && form.Hypotenuse.Value != 0) && !string.IsNullOrEmpty(form.Color))
+                    {
+                        var triangle = new Triangle(form.Adjacent.Value, form.Opposite.Value, form.Hypotenuse.Value, form.Color);
+                        _Forms.Add(triangle);
+                        return Ok(new 
+                        {
+                            status = "success",
+                            message = "Done adding triangle",
+                            data = new 
+                            {
+                                adjacent = form.Adjacent.Value,
+                                opposite = form.Opposite.Value,
+                                hypotenuse = form.Hypotenuse.Value,
+                                color = form.Color
+                            }
+                        });
+                    }
+                    return BadRequest(new 
+                    {
+                        status = "error",
+                        message = "Adjacent, Opposite, and Hypotenuse are required for triangle."
+                    });
                 break;
                 case "rectangle":
                     if ((form.Length.Value != 0 && form.Width.Value != 0) && !string.IsNullOrEmpty(form.Color))
                     {
                         var rectangle = new Rectangle(form.Length.Value, form.Width.Value, form.Color);
                         _Forms.Add(rectangle);
-                        return Ok("Done adding rectangle.");
+                        return Ok(new
+                        {
+                            status = "success",
+                            message = "Done adding rectangle",
+                            data = new
+                            {
+                                width = form.Length.Value,
+                                height = form.Width.Value,
+                                color = form.Color
+                            }
+                        });
                     }
-                    return BadRequest("Length and Width are required for rectangle.");
+                    return BadRequest(new
+                    {
+                        status = "error",
+                        message = "Length and Width are required."
+                    });
             }
 
             return BadRequest("Invalid Type.");

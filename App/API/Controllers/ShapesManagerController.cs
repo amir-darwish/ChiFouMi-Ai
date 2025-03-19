@@ -137,7 +137,12 @@ namespace MyGameAPI.Controllers
             // Add to list 
             _compositions.Add(composition);
 
-            return Ok("Composition Successfully added."); 
+            return Ok(new
+            {
+                status = "Success",
+                message = "Composition added",
+                
+            }); 
         }
         
 // post form to composition 
@@ -196,7 +201,11 @@ namespace MyGameAPI.Controllers
                     return BadRequest($"Invalid shape type: {formDto.Type}");
             }
 
-            return Ok($"Form added successfully to composition {id}.");
+            return Ok(new
+            {
+                status = "Success",
+                message = "Form added",
+            });
         }
 
     }
