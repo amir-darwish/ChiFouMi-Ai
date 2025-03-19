@@ -7,7 +7,7 @@ namespace App.Data
     {
         public DbSet<Player> Players { get; set; }
         public DbSet<GameHistory> GameHistories { get; set; }
-
+        public DbSet<GameSession> GameSession { get; set; } 
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }

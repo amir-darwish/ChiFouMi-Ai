@@ -16,6 +16,11 @@ namespace App.Class
         public enShapeType ComputerShape { get; set; }
         
         public string Result { get; set; }
+        [ForeignKey("GameSession")]
+        public int GameSessionId { get; set; }
+        public GameSession GameSession { get; set; }
         public DateTime PlayedAt { get; set; } = DateTime.Now;
+        
+ 
     }
 }

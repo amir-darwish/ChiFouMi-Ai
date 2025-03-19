@@ -26,6 +26,27 @@ namespace App.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "GameSession",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PlayerId = table.Column<int>(type: "integer", nullable: false),
+                    TotalRounds = table.Column<int>(type: "integer", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_GameSession", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GameSession_Players_PlayerId",
+                        column: x => x.PlayerId,
+                        principalTable: "Players",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "GameHistories",
                 columns: table => new
                 {
@@ -35,11 +56,18 @@ namespace App.Migrations
                     PlayerShape = table.Column<int>(type: "integer", nullable: false),
                     ComputerShape = table.Column<int>(type: "integer", nullable: false),
                     Result = table.Column<string>(type: "text", nullable: false),
-                    PlayedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
+                    PlayedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    GameSessionId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_GameHistories", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_GameHistories_GameSession_GameSessionId",
+                        column: x => x.GameSessionId,
+                        principalTable: "GameSession",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_GameHistories_Players_PlayerId",
                         column: x => x.PlayerId,
@@ -49,8 +77,18 @@ namespace App.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_GameHistories_GameSessionId",
+                table: "GameHistories",
+                column: "GameSessionId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_GameHistories_PlayerId",
                 table: "GameHistories",
+                column: "PlayerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_GameSession_PlayerId",
+                table: "GameSession",
                 column: "PlayerId");
         }
 
@@ -59,6 +97,9 @@ namespace App.Migrations
         {
             migrationBuilder.DropTable(
                 name: "GameHistories");
+
+            migrationBuilder.DropTable(
+                name: "GameSession");
 
             migrationBuilder.DropTable(
                 name: "Players");

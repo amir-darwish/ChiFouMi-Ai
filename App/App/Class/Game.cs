@@ -140,7 +140,7 @@ public class Game
             // Add game to GameHistories table in Database
             var gameHistory = new GameHistory
             {
-                PlayerId = _player1.Id, // ربط الـ PlayerId بشكل صحيح
+                PlayerId = _player1.Id, 
                 PlayerShape = _player1.GetEnumShape(),
                 ComputerShape = _computer.GetEnumShape(),
                 Result = result,
@@ -148,7 +148,7 @@ public class Game
             };
 
             context.GameHistories.Add(gameHistory);
-            context.SaveChanges(); // حفظ سجل اللعبة
+            context.SaveChanges(); 
         }
     }
 

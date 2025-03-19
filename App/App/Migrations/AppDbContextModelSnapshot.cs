@@ -33,6 +33,9 @@ namespace App.Migrations
                     b.Property<int>("ComputerShape")
                         .HasColumnType("integer");
 
+                    b.Property<int>("GameSessionId")
+                        .HasColumnType("integer");
+
                     b.Property<DateTime>("PlayedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -48,9 +51,35 @@ namespace App.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("GameSessionId");
+
                     b.HasIndex("PlayerId");
 
                     b.ToTable("GameHistories");
+                });
+
+            modelBuilder.Entity("App.Class.GameSession", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("PlayerId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("TotalRounds")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PlayerId");
+
+                    b.ToTable("GameSession");
                 });
 
             modelBuilder.Entity("App.Class.Player", b =>
@@ -72,13 +101,37 @@ namespace App.Migrations
 
             modelBuilder.Entity("App.Class.GameHistory", b =>
                 {
+                    b.HasOne("App.Class.GameSession", "GameSession")
+                        .WithMany("GameHistories")
+                        .HasForeignKey("GameSessionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("App.Class.Player", "Player")
                         .WithMany("GameHistories")
                         .HasForeignKey("PlayerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("GameSession");
+
                     b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("App.Class.GameSession", b =>
+                {
+                    b.HasOne("App.Class.Player", "Player")
+                        .WithMany()
+                        .HasForeignKey("PlayerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Player");
+                });
+
+            modelBuilder.Entity("App.Class.GameSession", b =>
+                {
+                    b.Navigation("GameHistories");
                 });
 
             modelBuilder.Entity("App.Class.Player", b =>
