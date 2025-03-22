@@ -107,7 +107,8 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
     computer.ChooseShape(CreateShape(computerShape));
 
     var result = DetermineWinner(player, computer);
-
+    
+    
     // Check number of rounds
     var gameHistoryCount = _context.GameHistories.Count(gh => gh.GameSessionId == playerShapeRequest.GameSessionId);
     if (gameHistoryCount >= gameSession.TotalRounds)
@@ -143,7 +144,6 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
 
 private enShapeType GetComputerShapeForHardDifficulty(int playerId)
 {
-    // استرجاع آخر 10 مباريات لهذا اللاعب من قاعدة البيانات
     var lastGames = _context.GameHistories
         .Where(gh => gh.PlayerId == playerId)
         .OrderByDescending(gh => gh.PlayedAt)
@@ -152,30 +152,26 @@ private enShapeType GetComputerShapeForHardDifficulty(int playerId)
 
     if (lastGames.Count == 0)
     {
-        // إذا لم يكن هناك مباريات سابقة، نختار عشوائيًا
         return (enShapeType)new Random().Next(1, 4);
     }
 
-    // حساب التكرارات لكل شكل اختاره اللاعب
     var shapeCounts = lastGames.GroupBy(gh => gh.PlayerShape)
         .Select(g => new { Shape = g.Key, Count = g.Count() })
         .OrderByDescending(g => g.Count)
         .ToList();
 
-    // أكثر شكل اختاره اللاعب
     var mostPlayedShape = shapeCounts.First().Shape;
 
-    // اختيار الشكل الذي يهزمه
     switch (mostPlayedShape)
     {
         case enShapeType.Rond:
-            return enShapeType.Rectangle;  // الكمبيوتر يختار Rectangle لهزيمة Rond
+            return enShapeType.Rectangle;  
         case enShapeType.Rectangle:
-            return enShapeType.Triangle;  // الكمبيوتر يختار Triangle لهزيمة Rectangle
+            return enShapeType.Triangle;  
         case enShapeType.Triangle:
-            return enShapeType.Rond;  // الكمبيوتر يختار Rond لهزيمة Triangle
+            return enShapeType.Rond;  
         default:
-            return (enShapeType)new Random().Next(1, 4); // حالة افتراضية
+            return (enShapeType)new Random().Next(1, 4); 
     }
 }
 
@@ -202,11 +198,11 @@ private enShapeType GetComputerShapeForHardDifficulty(int playerId)
         private string DetermineWinner(Player player, Player computer)
         {
             if (player.GetEnumShape() == enShapeType.Triangle && computer.GetEnumShape() == enShapeType.Rectangle)
-                return "Player wins with Triangle!";
+                return $"{player.Name} wins with Triangle!";
             else if (player.GetEnumShape() == enShapeType.Rectangle && computer.GetEnumShape() == enShapeType.Rond)
-                return "Player wins with Rectangle!";
+                return $"{player.Name} wins with Rectangle!";
             else if (player.GetEnumShape() == enShapeType.Rond && computer.GetEnumShape() == enShapeType.Triangle)
-                return "Player wins with Rond!";
+                return $"{player.Name} wins with Rond!";
             else if (computer.GetEnumShape() == enShapeType.Triangle && player.GetEnumShape() == enShapeType.Rectangle)
                 return "Computer wins with Triangle!";
             else if (computer.GetEnumShape() == enShapeType.Rectangle && player.GetEnumShape() == enShapeType.Rond)

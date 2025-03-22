@@ -107,6 +107,43 @@ public class Game
         return TransferAnEnumToShape(computerShape);
     }
 
+    private Form GetComputerShapeForHardDifficulty(int playerId)
+    {
+        enShapeType computerShape;
+        // Get last 10 round 
+        var lastGames = _context.GameHistories
+            .Where(gh => gh.PlayerId == playerId)
+            .OrderByDescending(gh=>gh.PlayedAt)
+            .Take(10)
+            .ToList();
+
+        if (lastGames.Count == 0)
+        {
+            return GetShapeComputer();
+        }
+        
+        // Sorting shapes   
+        var shapesCount = lastGames.GroupBy(gh=>gh.PlayerShape)
+            .Select(g=> new {Shape = g.Key, Count = g.Count()})
+            .OrderByDescending(g=>g.Count)
+            .ToList();
+        
+        
+        var mostPlayedShape = shapesCount.First().Shape;
+
+        switch (mostPlayedShape)
+        {
+            case enShapeType.Rond:
+                return TransferAnEnumToShape(enShapeType.Rectangle);
+            case enShapeType.Rectangle:
+                return TransferAnEnumToShape(enShapeType.Triangle);
+            case enShapeType.Triangle:
+                return TransferAnEnumToShape(enShapeType.Rond);
+            default:
+                return GetShapeComputer();
+        }
+    }
+
     private void PrintChosenShapes(enShapeType player, enShapeType computerShape)
     {
         Console.WriteLine($"{_player1.Name}, you chose {player}.");
@@ -115,15 +152,50 @@ public class Game
 
     private bool isLastRound(short round)
     {
-        return round-1 == _gameSession.TotalRounds;
+        if (round - 1 == _gameSession.TotalRounds)
+        {
+            var gameHistories = _context.GameHistories
+                .Where(gh => gh.GameSessionId == _gameSession.Id)
+                .ToList();
+
+            int playerWins = gameHistories.Count(gh => gh.Result.StartsWith(_gameSession.Player.Name));
+            int computerWins = gameHistories.Count(gh => gh.Result.StartsWith("Computer"));
+
+
+            Console.WriteLine("\n\n ----------- RESULT ----------");
+            
+            if (playerWins > computerWins)
+            {
+                Console.WriteLine("\tBravo You Win !");
+            }
+            else if (playerWins < computerWins)
+            {
+                Console.WriteLine("\tSorry You Lose !");
+            }
+            else
+            {
+                Console.WriteLine("\tIt's a Draw !");
+            }
+
+            return true;
+        } 
+        return false;
     }
     public void Play()
     { 
         short round = 1;
         while (!isLastRound(round))
         {
-            _player1.ChooseShape(GetShapePlayer());        
-            _computer.ChooseShape(GetShapeComputer());
+            _player1.ChooseShape(GetShapePlayer());
+            if (_gameSession.DifficultyLevel == enDifficultyLevel.Hard)
+            {
+                _computer.ChooseShape(GetComputerShapeForHardDifficulty(_player1.Id));
+            }
+            else
+            {
+                _computer.ChooseShape(GetShapeComputer());
+
+            }
             PrintChosenShapes(_player1.GetEnumShape(), _computer.GetEnumShape());
             string result = "";
             result = DetermineWinner();
