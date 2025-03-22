@@ -7,6 +7,7 @@ public class GameSession
         public int PlayerId { get; set; } 
         public Player Player { get; set; }
         public int TotalRounds { get; set; } 
+        public enDifficultyLevel DifficultyLevel { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         public List<GameHistory> GameHistories { get; set; } = new List<GameHistory>();

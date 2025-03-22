@@ -37,7 +37,8 @@ namespace App.Controllers
             var gameSession = new GameSession()
             {
                 PlayerId = player.Id,
-                TotalRounds = request.TotalRounds
+                TotalRounds = request.TotalRounds,
+                DifficultyLevel = request.DifficultyLevel,
             };
 
             _context.GameSession.Add(gameSession);
@@ -58,7 +59,7 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
     {
         return BadRequest(new
         {
-            erorr ="Invalid input. Please provide a valid shape and session ID."
+            error = "Invalid input. Please provide a valid shape and session ID."
         });
     }
 
@@ -68,7 +69,7 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
     {
         return BadRequest(new
         {
-            error =  "Game session could not be found."
+            error = "Game session could not be found."
         });
     }
 
@@ -77,15 +78,31 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
     {
         return BadRequest(new
         {
-            error = "Are you sure you are a player ? I didn't find you in my datebase. "
+            error = "Are you sure you are a player? I didn't find you in my database."
         });
     }
 
-    // chose player shape by number
+    // Choose player shape by number
     player.ChooseShape(CreateShape(playerShapeRequest.PlayerShape));
 
-    // chose computer shape randomly
-    var computerShape = (enShapeType)new Random().Next(1, 4);
+    enShapeType computerShape;
+
+    // Determine computer's shape based on difficulty level
+    if (gameSession.DifficultyLevel == enDifficultyLevel.Medium)
+    {
+        computerShape = (enShapeType)new Random().Next(1, 4); 
+    }
+    else if (gameSession.DifficultyLevel == enDifficultyLevel.Hard)
+    {
+        // Implement AI logic for hard difficulty
+        computerShape = GetComputerShapeForHardDifficulty(player.Id);
+    }
+    else
+    {
+        // Default to random if difficulty is unknown or easy
+        computerShape = (enShapeType)new Random().Next(1, 4);
+    }
+
     var computer = new Player("Computer");
     computer.ChooseShape(CreateShape(computerShape));
 
@@ -95,10 +112,13 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
     var gameHistoryCount = _context.GameHistories.Count(gh => gh.GameSessionId == playerShapeRequest.GameSessionId);
     if (gameHistoryCount >= gameSession.TotalRounds)
     {
-        return BadRequest("You have reached the maximum number of rounds for this session.");
+        return BadRequest(new
+        {
+            error = "You have reached the maximum number of rounds for this session."
+        });
     }
 
-    // save in database
+    // Save in database
     var gameHistory = new GameHistory
     {
         GameSessionId = playerShapeRequest.GameSessionId,
@@ -120,6 +140,46 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
         Result = result
     });
 }
+
+private enShapeType GetComputerShapeForHardDifficulty(int playerId)
+{
+    // استرجاع آخر 10 مباريات لهذا اللاعب من قاعدة البيانات
+    var lastGames = _context.GameHistories
+        .Where(gh => gh.PlayerId == playerId)
+        .OrderByDescending(gh => gh.PlayedAt)
+        .Take(10)
+        .ToList();
+
+    if (lastGames.Count == 0)
+    {
+        // إذا لم يكن هناك مباريات سابقة، نختار عشوائيًا
+        return (enShapeType)new Random().Next(1, 4);
+    }
+
+    // حساب التكرارات لكل شكل اختاره اللاعب
+    var shapeCounts = lastGames.GroupBy(gh => gh.PlayerShape)
+        .Select(g => new { Shape = g.Key, Count = g.Count() })
+        .OrderByDescending(g => g.Count)
+        .ToList();
+
+    // أكثر شكل اختاره اللاعب
+    var mostPlayedShape = shapeCounts.First().Shape;
+
+    // اختيار الشكل الذي يهزمه
+    switch (mostPlayedShape)
+    {
+        case enShapeType.Rond:
+            return enShapeType.Rectangle;  // الكمبيوتر يختار Rectangle لهزيمة Rond
+        case enShapeType.Rectangle:
+            return enShapeType.Triangle;  // الكمبيوتر يختار Triangle لهزيمة Rectangle
+        case enShapeType.Triangle:
+            return enShapeType.Rond;  // الكمبيوتر يختار Rond لهزيمة Triangle
+        default:
+            return (enShapeType)new Random().Next(1, 4); // حالة افتراضية
+    }
+}
+
+
 
 
 
@@ -177,6 +237,8 @@ public IActionResult PlayGame([FromBody] PlayerShapeRequest playerShapeRequest)
     {
         public string PlayerName { get; set; }
         public int TotalRounds { get; set; } 
+        
+        public enDifficultyLevel DifficultyLevel { get; set; }
     }
     
     

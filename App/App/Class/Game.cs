@@ -10,10 +10,26 @@ public class Game
     private Player _computer;
     private AppDbContext _context;
     private ShapeManager _shapeManager;
-
-    public Game(Player player1 )
+    private string _playerName;
+    private short _numberOfRounds;
+    private short _difficulty;
+    private GameSession _gameSession;
+    private GameHistory _gameHistory;
+    
+    public Game()
     {
-        _player1 = player1;
+         _difficulty = 0;
+        Console.WriteLine("Enter your name:");
+         string _playerName = Console.ReadLine();
+         Console.WriteLine("Enter the number of rounds you would like to play:");
+         _numberOfRounds = short.Parse(Console.ReadLine());
+         while (_difficulty > 3 || _difficulty <= 0)
+         {
+             Console.WriteLine("Enter the difficulty you would like to play:");
+             Console.WriteLine("1- Easy \n2- Medium \n3- Hard:");
+             _difficulty = short.Parse(Console.ReadLine());
+         }
+         
         _computer = new Player("Computer");
         _shapeManager = new ShapeManager();
         
@@ -22,6 +38,30 @@ public class Game
             .UseNpgsql("Host=localhost;Database=chifoumi_db;Username=admin;Password=admin")
             .Options;
         _context = new AppDbContext(options);
+        
+        //Search for player and add it if not exist
+        var player = _context.Players.FirstOrDefault(p => p.Name == _playerName);
+        if (player == null)
+        {
+            player = new Player(_playerName);
+            _context.Players.Add(player);
+            _context.SaveChanges();
+            _player1 = player;
+        }
+        else
+        {
+            _player1 = player;
+        }
+
+        // create game session and save it in DB
+        _gameSession = new GameSession()
+        {
+            PlayerId = player.Id,
+            TotalRounds = _numberOfRounds,
+            DifficultyLevel = (enDifficultyLevel)_difficulty,
+        };
+        _context.GameSession.Add(_gameSession);
+        _context.SaveChanges();
     }
     private Form TransferAnEnumToShape(enShapeType enShape)
     {
@@ -72,16 +112,26 @@ public class Game
         Console.WriteLine($"{_player1.Name}, you chose {player}.");
         Console.WriteLine($"{_computer.Name}, chose {computerShape}.");
     }
+
+    private bool isLastRound(short round)
+    {
+        return round-1 == _gameSession.TotalRounds;
+    }
     public void Play()
     { 
- 
-        _player1.ChooseShape(GetShapePlayer());        
-       _computer.ChooseShape(GetShapeComputer());
-       PrintChosenShapes(_player1.GetEnumShape(), _computer.GetEnumShape());
-        string result = "";
-        result = DetermineWinner();
-        Console.WriteLine(result);
-        SaveGameResult(result);
+        short round = 1;
+        while (!isLastRound(round))
+        {
+            _player1.ChooseShape(GetShapePlayer());        
+            _computer.ChooseShape(GetShapeComputer());
+            PrintChosenShapes(_player1.GetEnumShape(), _computer.GetEnumShape());
+            string result = "";
+            result = DetermineWinner();
+            Console.WriteLine(result);
+            SaveGameResult(result);  
+            round++;
+        }
+
     }
     
 
@@ -124,18 +174,6 @@ public class Game
             .Options;
         using (var context = new AppDbContext(options))
         {
-            // Check if Player Alredy in Datebase
-            var existingPlayer = context.Players.FirstOrDefault(p => p.Name == _player1.Name);
-            if (existingPlayer == null)
-            {
-                context.Players.Add(_player1);
-                context.SaveChanges(); 
-            }
-            else
-            {
-                // If the player exists, use the existing player
-                _player1 = existingPlayer;
-            }
 
             // Add game to GameHistories table in Database
             var gameHistory = new GameHistory
@@ -144,6 +182,7 @@ public class Game
                 PlayerShape = _player1.GetEnumShape(),
                 ComputerShape = _computer.GetEnumShape(),
                 Result = result,
+                GameSessionId = _gameSession.Id,
                 PlayedAt = DateTime.UtcNow
             };
 

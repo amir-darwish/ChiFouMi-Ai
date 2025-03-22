@@ -14,7 +14,6 @@ namespace App.Class
         
         public enShapeType PlayerShape { get; set; }
         public enShapeType ComputerShape { get; set; }
-        
         public string Result { get; set; }
         [ForeignKey("GameSession")]
         public int GameSessionId { get; set; }
