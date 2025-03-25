@@ -26,7 +26,11 @@ app.Urls.Add($"http://0.0.0.0:{port}");
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(options =>
+    {
+        options.SwaggerEndpoint("/swagger/v1/swagger.json", "API V1");
+        options.RoutePrefix = string.Empty; 
+    });
 }
 else
 {
@@ -35,6 +39,7 @@ else
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); 
 app.UseRouting();
 app.UseAuthorization();
 
