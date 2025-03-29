@@ -212,7 +212,25 @@ private enShapeType GetComputerShapeForHardDifficulty(int playerId)
             else
                 return "It's a tie!";
         }
-        
+        // get session result
+        [HttpGet("session-result/{sessionId}")]
+        public IActionResult GetSessionResult(int sessionId)
+        {
+            var gameHistories = _context.GameHistories
+                .Where(h => h.GameSessionId == sessionId)
+                .ToList();
+
+            if (!gameHistories.Any())
+            {
+                return NotFound(new { message = "No game history found for this session." });
+            }
+
+            int playerWins = gameHistories.Count(h => h.Result.Contains("wins"));
+            int computerWins = gameHistories.Count(h => h.Result.Contains("Computer wins"));
+
+            return Ok(new { playerWins, computerWins });
+        }
+
         // get history 
         [HttpGet("history")]
         public IActionResult GetGameHistory()
