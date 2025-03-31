@@ -1,5 +1,9 @@
+
+
 import React, { useState } from 'react';
-import { startGameSession, playGame, getSessionResult } from '../services/gameService.ts';
+import { startGameSession, playGame, getSessionResult, getSessionHistory } from '../services/gameService.ts';
+import type { GameSessionHistory } from '../services/gameService.ts';
+
 
 enum enShapeType {
     Rond = 1,
@@ -7,8 +11,8 @@ enum enShapeType {
     Rectangle = 3
 }
 
-
 const GamePage: React.FC = () => {
+    // Existing state
     const [playerName, setPlayerName] = useState<string>('');
     const [totalRounds, setTotalRounds] = useState<number>(0);
     const [difficultyLevel, setDifficultyLevel] = useState<number>(1);
@@ -21,6 +25,39 @@ const GamePage: React.FC = () => {
     const [computerWins, setComputerWins] = useState<number | null>(null);
     const [showComputerChoice, setShowComputerChoice] = useState(false);
     const [gameEnded, setGameEnded] = useState(false);
+
+    // New history state
+    const [searchSessionId, setSearchSessionId] = useState<number | ''>('');
+    const [sessionHistory, setSessionHistory] = useState<GameSessionHistory[]>([]);
+    const [historyError, setHistoryError] = useState<string>('');
+
+    // Add history search handler
+    const handleSearchHistory = async () => {
+        if (!searchSessionId) {
+            setHistoryError('Please enter a valid session ID');
+            return;
+        }
+
+        try {
+            const history = await getSessionHistory(searchSessionId);
+
+            if (history === null) {
+                setHistoryError(`No history found for session #${searchSessionId}`);
+                return;
+            }
+
+            if (history.length === 0) {
+                setHistoryError(`No history found for session #${searchSessionId}`);
+                setSessionHistory([]);
+            } else {
+                setSessionHistory(history);
+                setHistoryError('');
+            }
+        } catch (error) {
+            setHistoryError('An unexpected error occurred');
+            console.error('Search error:', error);
+        }
+    };
 
     const handleStartGame = async () => {
         const sessionData = await startGameSession(playerName, totalRounds, difficultyLevel);
@@ -165,6 +202,8 @@ const GamePage: React.FC = () => {
             <div className="game-header">
                 <h1>SHAPE SHOWDOWN</h1>
                 <p>Choose your weapon and crush the AI!</p>
+
+               
             </div>
 
             {!gameSessionId ? (
@@ -194,6 +233,46 @@ const GamePage: React.FC = () => {
                     <button className="game-button" onClick={handleStartGame}>
                         START BATTLE
                     </button>
+                    {/* History Search Section */}
+                    <div className="history-section">
+                        <div className="history-search">
+                            <input
+                                type="number"
+                                className="game-input"
+                                placeholder="Enter Session ID"
+                                value={searchSessionId}
+                                onChange={(e) => setSearchSessionId(Number(e.target.value))}
+                            />
+                            <button
+                                className="game-button"
+                                onClick={handleSearchHistory}
+                            >
+                                SEARCH HISTORY
+                            </button>
+                        </div>
+
+                        {historyError && <p className="error-message">{historyError}</p>}
+
+                        {sessionHistory.length > 0 && sessionHistory != null && (
+                            <div className="history-results">
+                                <h3>Session {searchSessionId} History</h3>
+                                <div className="history-list">
+                                    {sessionHistory.map((record) => (
+                                        <div key={record.id} className="history-record">
+                                            <p>
+                                                <span className="player-name">{record.playerName}</span> chose
+                                                <span className="shape-name">{record.playerShape}</span> vs AI's
+                                                <span className="shape-name">{record.computerShape}</span>
+                                            </p>
+                                            <p className="result-line">Result: {record.result}</p>
+                                            <p className="timestamp">{new Date(record.playedAt).toLocaleString()}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                        
+                    </div>
                 </div>
             ) : (
                 <div>

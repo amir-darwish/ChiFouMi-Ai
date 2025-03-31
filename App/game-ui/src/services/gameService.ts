@@ -1,3 +1,12 @@
+export interface GameSessionHistory {
+    id: number;
+    playerName: string;
+    playerShape: string;
+    computerShape: string;
+    result: string;
+    gameSessionId: number;
+    playedAt: string;
+}
 const BASE_URL = 'http://localhost:5044/api/Game';
 
 export const startGameSession = async (playerName: string, totalRounds: number, difficultyLevel: number) => {
@@ -55,4 +64,21 @@ export const getSessionResult = async (sessionId: number) => {
         console.error("Error getting session result:", error);
         return null;
     }
+    
 }
+export const getSessionHistory = async (sessionId: number): Promise<GameSessionHistory[] | null> => {
+    try {
+        const response = await fetch(`${BASE_URL}/session/${sessionId}`);
+
+        if (!response.ok) {
+            throw new Error('Failed to get session history');
+        }
+
+        const data: GameSessionHistory[] = await response.json();
+        return data;
+    } catch (error) {
+        console.error("Error fetching session history:", error);
+        return null;
+    }
+};
+

@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using App.Class;
 using System;
+using System.Diagnostics.CodeAnalysis;
+using API.ClassDTO;
 using App.Data;
 
 namespace App.Controllers
@@ -212,6 +214,35 @@ private enShapeType GetComputerShapeForHardDifficulty(int playerId)
             else
                 return "It's a tie!";
         }
+        
+        // get session histiory by id 
+        [HttpGet("session/{sessionId}")]
+        public IActionResult GetSessionById(int sessionId)
+        {
+            var gameHistories = _context.GameHistories
+                .Where(h => h.GameSessionId == sessionId)
+                .Join(_context.Players,
+                    gh=>gh.PlayerId,
+                    p => p.Id,
+                    (gh,p)=> new GameSessionDTO()
+                    {
+                        Id = gh.Id,
+                        GameSessionId = gh.GameSessionId,
+                        PlayerName = p.Name,
+                        PlayerShape = ((enShapeType)gh.PlayerShape).ToString(),
+                        ComputerShape = ((enShapeType)gh.ComputerShape).ToString(),
+                        Result = gh.Result,
+                        PlayedAt = gh.PlayedAt
+                    })
+                .ToList();
+
+            if (!gameHistories.Any())
+            {
+                return NotFound(new { message = "No game history found for this session." });
+            }
+            return Ok(gameHistories);
+        }
+        
         // get session result
         [HttpGet("session-result/{sessionId}")]
         public IActionResult GetSessionResult(int sessionId)
@@ -254,6 +285,7 @@ private enShapeType GetComputerShapeForHardDifficulty(int playerId)
         
         public enDifficultyLevel DifficultyLevel { get; set; }
     }
+    
     
     
     
