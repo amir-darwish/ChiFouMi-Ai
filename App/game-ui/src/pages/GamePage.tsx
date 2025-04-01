@@ -1,7 +1,7 @@
 
 
-import React, { useState } from 'react';
-import { startGameSession, playGame, getSessionResult, getSessionHistory } from '../services/gameService.ts';
+import React, {useEffect, useState} from 'react';
+import { startGameSession, playGame, getSessionResult, getSessionHistory,BASE_URL } from '../services/gameService.ts';
 import type { GameSessionHistory } from '../services/gameService.ts';
 
 
@@ -30,34 +30,44 @@ const GamePage: React.FC = () => {
     const [searchSessionId, setSearchSessionId] = useState<number | ''>('');
     const [sessionHistory, setSessionHistory] = useState<GameSessionHistory[]>([]);
     const [historyError, setHistoryError] = useState<string>('');
+    const [availableSessions, setAvailableSessions] = useState<number[]>([]);
+    const [isLoadingSessions, setIsLoadingSessions] = useState(false);
 
     // Add history search handler
-    const handleSearchHistory = async () => {
-        if (!searchSessionId) {
-            setHistoryError('Please enter a valid session ID');
-            return;
-        }
+    const handleSearchHistory = async (sessionId: number) => {
+        setSessionHistory([]);
+        setHistoryError('');
 
         try {
-            const history = await getSessionHistory(searchSessionId);
+            const history = await getSessionHistory(sessionId);
 
-            if (history === null) {
-                setHistoryError(`No history found for session #${searchSessionId}`);
-                return;
-            }
-
-            if (history.length === 0) {
-                setHistoryError(`No history found for session #${searchSessionId}`);
-                setSessionHistory([]);
-            } else {
+            if (history && history.length > 0) {
                 setSessionHistory(history);
-                setHistoryError('');
+            } else {
+                setHistoryError(`No matches found for session #${sessionId}`);
             }
         } catch (error) {
-            setHistoryError('An unexpected error occurred');
-            console.error('Search error:', error);
+            setHistoryError('Error fetching session history');
+            console.error(error);
         }
     };
+    //
+    useEffect(() => {
+        const fetchAllSessions = async () => {
+            setIsLoadingSessions(true);
+            try {
+                const response = await fetch(`${BASE_URL}/sessions`);
+                const data = await response.json();
+                setAvailableSessions(data);
+            } catch (error) {
+                console.error("Error fetching sessions:", error);
+            } finally {
+                setIsLoadingSessions(false);
+            }
+        };
+
+        fetchAllSessions();
+    }, []);
 
     const handleStartGame = async () => {
         const sessionData = await startGameSession(playerName, totalRounds, difficultyLevel);
@@ -235,25 +245,35 @@ const GamePage: React.FC = () => {
                     </button>
                     {/* History Search Section */}
                     <div className="history-section">
-                        <div className="history-search">
-                            <input
-                                type="number"
-                                className="game-input"
-                                placeholder="Enter Session ID"
-                                value={searchSessionId}
-                                onChange={(e) => setSearchSessionId(Number(e.target.value))}
-                            />
-                            <button
-                                className="game-button"
-                                onClick={handleSearchHistory}
-                            >
-                                SEARCH HISTORY
-                            </button>
+                        <p>Show History</p>
+                        <div className="session-selector">
+                            {isLoadingSessions ? (
+                                <div className="loading-sessions">
+                                    Loading available sessions...
+                                </div>
+                            ) : (
+                                <select
+                                    className="game-select"
+                                    value={searchSessionId}
+                                    onChange={(e) => {
+                                        const sessionId = Number(e.target.value);
+                                        setSearchSessionId(sessionId);
+                                        handleSearchHistory(sessionId);
+                                    }}
+                                >
+                                    <option value="">Select a session</option>
+                                    {availableSessions.map(sessionId => (
+                                        <option key={sessionId} value={sessionId}>
+                                            Session #{sessionId}
+                                        </option>
+                                    ))}
+                                </select>
+                            )}
                         </div>
 
                         {historyError && <p className="error-message">{historyError}</p>}
 
-                        {sessionHistory.length > 0 && sessionHistory != null && (
+                        {sessionHistory.length > 0 && (
                             <div className="history-results">
                                 <h3>Session {searchSessionId} History</h3>
                                 <div className="history-list">
@@ -271,7 +291,10 @@ const GamePage: React.FC = () => {
                                 </div>
                             </div>
                         )}
-                        
+
+                        {!isLoadingSessions && availableSessions.length === 0 && (
+                            <p className="no-sessions">No sessions available</p>
+                        )}
                     </div>
                 </div>
             ) : (

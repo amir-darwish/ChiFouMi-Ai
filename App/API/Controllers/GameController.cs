@@ -263,13 +263,16 @@ private enShapeType GetComputerShapeForHardDifficulty(int playerId)
         }
 
         // get history 
-        [HttpGet("history")]
-        public IActionResult GetGameHistory()
+        [HttpGet("sessions")]
+        public IActionResult GetAllSessionIds()
         {
-            var history = _context.GameHistories.ToList();
-            return Ok(history);
+            var sessionIds = _context.GameSession
+                .OrderByDescending(s => s.Id)
+                .Select(s => s.Id)
+                .ToList();
+    
+            return Ok(sessionIds);
         }
-
     }
 
     public class PlayerShapeRequest

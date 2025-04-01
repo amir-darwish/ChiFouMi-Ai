@@ -7,7 +7,7 @@ export interface GameSessionHistory {
     gameSessionId: number;
     playedAt: string;
 }
-const BASE_URL = 'http://localhost:5044/api/Game';
+export const BASE_URL = 'http://localhost:5044/api/Game';
 
 export const startGameSession = async (playerName: string, totalRounds: number, difficultyLevel: number) => {
     try {
@@ -81,4 +81,7 @@ export const getSessionHistory = async (sessionId: number): Promise<GameSessionH
         return null;
     }
 };
+
+
+
 
