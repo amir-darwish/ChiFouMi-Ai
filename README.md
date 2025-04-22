@@ -1,93 +1,140 @@
-# MohamedAmirDarwish_ChiFouMi-Ai
+# 🧠 Chifoumi-AI
 
+Un projet de jeu interactif basé sur le principe de Pierre-Papier-Ciseaux, combiné à des formes géométriques (cercle, triangle, rectangle) et une intelligence artificielle adaptative. Développé en C# (.NET) avec un front-end React et une base de données PostgreSQL.
 
+---
 
-## Getting started
+## 🚀 Fonctionnalités principales
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+### ✅ MVP
+- Jouer contre une intelligence artificielle.
+- Choix du nom, nombre de manches, et niveau de difficulté.
+- L’IA joue automatiquement après le choix du joueur.
+- Résumé final après toutes les manches.
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+### ✨ MVP+
+- Système de score (victoires, défaites, égalités).
+- Niveaux de difficulté : Facile, Moyen, Difficile.
+- IA adaptative basée sur les 10 dernières parties du joueur.
 
-## Add your files
+---
 
-- [ ] [Create](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#create-a-file) or [upload](https://docs.gitlab.com/ee/user/project/repository/web_editor.html#upload-a-file) files
-- [ ] [Add files using the command line](https://docs.gitlab.com/ee/gitlab-basics/add-file.html#add-a-file-using-the-command-line) or push an existing Git repository with the following command:
+## 🧰 Technologies utilisées
+- **Back-end :** ASP.NET Core (C#), Entity Framework
+- **Front-end :** React (Vite)
+- **Base de données :** PostgreSQL
+- **ORM :** Entity Framework Core
+- **Langage principal :** C#
 
+---
+
+## 🧱 Architecture orientée objet
+- Classe abstraite `Form` avec héritage pour : `Rond`, `Triangle`, `Rectangle`
+- Classe `ShapeManager` pour la composition et gestion des formes.
+- Utilisation des `enum` pour stocker les formes dans la BDD.
+- Utilisation de la POO pour favoriser l’extensibilité et la clarté du code.
+
+---
+
+## 📡 Documentation de l'API
+
+L'API permet d'interagir avec le jeu de manière structurée via des requêtes HTTP.
+
+### 1. 🔄 Démarrer une session de jeu
+
+**Endpoint :** `POST /api/Game/start-session`  
+**Description :** Démarre une nouvelle session pour un joueur donné.
+
+#### 🧾 Paramètres JSON :
+```json
+{
+  "PlayerName": "Jean",
+  "TotalRounds": 3
+}
 ```
-cd existing_repo
-git remote add origin http://git.uha4point0.fr/UHA40/fil-rouge-2024/4.0.2-de/mohamedamirdarwish_chifoumi-ai.git
-git branch -M main
-git push -uf origin main
+
+#### ✅ Réponse :
+```json
+{
+  "Status": "Success",
+  "Message": "Game session started!",
+  "SessionId": 123
+}
 ```
 
-## Integrate with your tools
+---
 
-- [ ] [Set up project integrations](http://git.uha4point0.fr/UHA40/fil-rouge-2024/4.0.2-de/mohamedamirdarwish_chifoumi-ai/-/settings/integrations)
+### 2. 🎮 Jouer une manche
 
-## Collaborate with your team
+**Endpoint :** `POST /api/Game/play`  
+**Description :** Permet au joueur de choisir une forme et jouer une manche.
 
-- [ ] [Invite team members and collaborators](https://docs.gitlab.com/ee/user/project/members/)
-- [ ] [Create a new merge request](https://docs.gitlab.com/ee/user/project/merge_requests/creating_merge_requests.html)
-- [ ] [Automatically close issues from merge requests](https://docs.gitlab.com/ee/user/project/issues/managing_issues.html#closing-issues-automatically)
-- [ ] [Enable merge request approvals](https://docs.gitlab.com/ee/user/project/merge_requests/approvals/)
-- [ ] [Set auto-merge](https://docs.gitlab.com/ee/user/project/merge_requests/merge_when_pipeline_succeeds.html)
+#### 🧾 Paramètres JSON :
+```json
+{
+  "PlayerShape": "Triangle",
+  "GameSessionId": 123
+}
+```
 
-## Test and Deploy
+#### ✅ Réponse :
+```json
+{
+  "PlayerName": "Jean",
+  "PlayerShape": "Triangle",
+  "ComputerShape": "Rectangle",
+  "Result": "Player wins with Triangle!"
+}
+```
 
-Use the built-in continuous integration in GitLab.
+---
 
-- [ ] [Get started with GitLab CI/CD](https://docs.gitlab.com/ee/ci/quick_start/index.html)
-- [ ] [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/ee/user/application_security/sast/)
-- [ ] [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/ee/topics/autodevops/requirements.html)
-- [ ] [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/ee/user/clusters/agent/)
-- [ ] [Set up protected environments](https://docs.gitlab.com/ee/ci/environments/protected_environments.html)
+### 3. 📜 Récupérer l'historique des parties
 
-***
+**Endpoint :** `GET /api/Game/history`  
+**Description :** Affiche l'historique complet des manches jouées.
 
-# Editing this README
+#### ✅ Réponse :
+```json
+[
+  {
+    "GameSessionId": 123,
+    "PlayerId": 1,
+    "PlayerShape": "Triangle",
+    "ComputerShape": "Rectangle",
+    "Result": "Player wins with Triangle!",
+    "PlayedAt": "2024-03-21T14:30:00Z"
+  }
+]
+```
 
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
+---
 
-## Suggestions for a good README
+### ❌ Gestion des erreurs
 
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
+| Code | Message |
+|------|---------|
+| 400  | "Invalid input. Please provide a valid player name and number of rounds." |
+| 400  | "Game session could not be found." |
+| 400  | "You have reached the maximum number of rounds for this session." |
+| 400  | "Invalid input. Please provide a valid shape and session ID." |
 
-## Name
-Choose a self-explaining name for your project.
+---
 
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
+## 📷 Aperçu du projet
 
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
 
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
+---
 
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
+## 🛠️ Améliorations futures
+- Ajouter plus de formes géométriques.
+- Ajouter une version mobile (MAUI / React Native).
+- Exporter les statistiques du joueur.
+- Ajouter un mode multijoueur local.
 
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
+---
 
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
+## 📄 Licence
 
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
+Ce projet est open-source. N'hésitez pas à le forker, l'améliorer et le partager !
 
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
